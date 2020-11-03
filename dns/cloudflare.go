@@ -92,7 +92,7 @@ func UpdateCloudflare(key, ip, name string) bool {
 
 	req, err := http.NewRequest("PUT", config.Conf.DNSURL+config.Conf.Identifier, bytes.NewBuffer(jsonBody))
 	if err != nil {
-		log.Fatal()
+		log.Fatal(err)
 	}
 	req.Header.Set("Content-Type", "application/json;charset=utf-8")
 	AddAuthHeader(req)
@@ -102,8 +102,8 @@ func UpdateCloudflare(key, ip, name string) bool {
 		log.Fatal(err)
 	}
 	defer resp.Body.Close()
-	PrintFalseInfo(resp)
 	if resp.StatusCode != 200 {
+		PrintFalseInfo(resp)
 		return false
 	}
 	return true

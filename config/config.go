@@ -19,6 +19,7 @@ type Config struct {
 	DNSURL         string
 	Payload        string
 	Identifier     string
+	OldIP          string
 }
 
 // Conf is Config struct's point

@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"time"
 
 	"iptodns/config"
 	"iptodns/dns"
@@ -14,8 +15,17 @@ func init() {
 }
 
 func main() {
-	localIP := ip.GetIP()
-	log.Print(localIP)
-	log.Print(config.Conf.Identifier)
-	dns.UpdateCloudflare(config.Conf.Key, localIP, config.Conf.Name)
+	for {
+		localIP := ip.GetIP()
+		log.Println(localIP)
+		log.Println(config.Conf.OldIP)
+		if config.Conf.OldIP != localIP {
+			dns.UpdateCloudflare(config.Conf.Key, localIP, config.Conf.Name)
+			config.Conf.OldIP = localIP
+			log.Println("IP address has updated")
+		} else {
+			log.Println("IP address has not changed")
+		}
+		time.Sleep(time.Duration(10) * time.Second)
+	}
 }
