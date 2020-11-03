@@ -5,9 +5,9 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"iptodns/config"
+	"iptodns/utils"
 	"log"
 	"net/http"
-	"net/url"
 	"strings"
 )
 
@@ -41,23 +41,6 @@ func PrintFalseInfo(resp *http.Response) {
 	log.Println(body)
 }
 
-// CustomUnmarshal is undump json body
-func CustomUnmarshal(resp *http.Response, r interface{}) {
-	body, _ := ioutil.ReadAll(resp.Body)
-	if err := json.Unmarshal(body, r); err != nil {
-		log.Fatal(err)
-	}
-}
-
-// CreateQuery create request url
-func CreateQuery(baseURL string, params map[string]string) string {
-	r := url.Values{}
-	for k, v := range params {
-		r.Set(k, v)
-	}
-	return baseURL + "?" + r.Encode()
-}
-
 // AddAuthHeader add auth info into request Header
 func AddAuthHeader(req *http.Request) {
 	req.Header.Add("X-Auth-Email", "cong.lv.yx@gmail.com")
@@ -74,14 +57,14 @@ func GenerateURL(dnsURL, zoneIdentifier string) string {
 func GetCloudflareDNSList(name string) []DNSRecord {
 	var results DNSRecordResp
 
-	url := CreateQuery(config.Conf.DNSURL, map[string]string{"name": name})
+	url := utils.CreateQuery(config.Conf.DNSURL, map[string]string{"name": name})
 	req, err := http.NewRequest("GET", url, nil)
 	AddAuthHeader(req)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	resp, err := config.Client.Do(req)
+	resp, err := utils.Client.Do(req)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -91,7 +74,7 @@ func GetCloudflareDNSList(name string) []DNSRecord {
 		PrintFalseInfo(resp)
 		return nil
 	}
-	CustomUnmarshal(resp, &results)
+	utils.CustomUnmarshal(resp, &results)
 	return results.Result
 }
 
@@ -114,13 +97,13 @@ func UpdateCloudflare(key, ip, name string) bool {
 	req.Header.Set("Content-Type", "application/json;charset=utf-8")
 	AddAuthHeader(req)
 
-	resp, err := config.Client.Do(req)
+	resp, err := utils.Client.Do(req)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer resp.Body.Close()
+	PrintFalseInfo(resp)
 	if resp.StatusCode != 200 {
-		PrintFalseInfo(resp)
 		return false
 	}
 	return true

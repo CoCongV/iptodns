@@ -2,7 +2,6 @@ package config
 
 import (
 	"log"
-	"net/http"
 
 	"github.com/BurntSushi/toml"
 )
@@ -24,9 +23,6 @@ type Config struct {
 
 // Conf is Config struct's point
 var Conf *Config
-
-//Client is global http client
-var Client = &http.Client{}
 
 // Setup is read toml config file for init
 func Setup() {
