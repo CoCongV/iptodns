@@ -5,11 +5,8 @@ ENV GO111MODULE=on \
     GOOS=linux \
     GOARCH=amd64 \
     GOPROXY=https://goproxy.io,direct
-RUN mkdir /build /dist
-WORKDIR /build
-ADD . /build
+RUN mkdir /iptodns
+WORKDIR /iptodns
+ADD . /iptodns
 RUN go build -o iptodns .
-WORKDIR /dist
-RUN cp /build/iptodns .
-RUN rm -rf /build
-CMD [ "/dist/iptodns" ]
+CMD [ "/iptodns/iptodns" ]
