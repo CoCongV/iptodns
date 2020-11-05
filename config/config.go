@@ -16,6 +16,10 @@ type Config struct {
 	Name           string `toml:"name"`
 	TTL            int    `toml:"ttl"`
 	Key            string `toml:"key"`
+	RedisServer    string `toml:"redis_server"`
+	RedisPassword  string `toml:"redis_password"`
+	RedisDB        int    `toml:"redis_db"`
+	RedisKey       string `toml:"redis_key"`
 	DNSURL         string
 	Payload        string
 	Identifier     string
